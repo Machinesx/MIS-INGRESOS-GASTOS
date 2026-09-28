@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#123c35">
 <meta name="description" content="Control personal de ingresos, gastos, acciones, Bitcoin y patrimonio.">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/MIS-INGRESOS-GASTOS/manifest.json">
+<meta name="theme-color" content="#123c35">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Ingresos y Gastos">
+<link rel="apple-touch-icon" href="/MIS-INGRESOS-GASTOS/icons/icon-192.png">
 <title>MIS INGRESOS Y GASTOS</title>
 <style>
 :root{--bg:#f3f6f4;--card:#fff;--ink:#17332d;--muted:#6d817a;--accent:#187a61;--accent2:#123c35;--line:#dce7e1;--soft:#e8f3ee;--danger:#b93e43;--warn:#a56a13;--blue:#3469a8;--shadow:0 4px 18px rgba(18,60,53,.07)}
@@ -283,7 +289,7 @@ saveBtcPrice.addEventListener('click',()=>{const p=num(btcPrice.value);if(p<=0)r
 exportAll.addEventListener('click',()=>download('mis-ingresos-y-gastos-copia.json',JSON.stringify({...state,exportedAt:new Date().toISOString()},null,2),'application/json'));exportCsv.addEventListener('click',()=>{const rows=[['Fecha','Tipo','Categoría','Descripción','Importe'],...state.money.map(x=>[x.date,x.type==='income'?'Ingreso':'Gasto',x.category,x.description||'',x.amount])];download('mis-ingresos-y-gastos-movimientos.csv',rows.map(r=>r.map(csvCell).join(';')).join('\n'),'text/csv;charset=utf-8')});importAll.addEventListener('click',()=>importFile.click());importFile.addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!data||!Array.isArray(data.money)||!Array.isArray(data.stocks)||!Array.isArray(data.btc))throw new Error('Formato no válido');if(!confirm('La importación sustituirá los datos actuales por la copia. ¿Continuar?'))return;state={...state,...data};save();alert('Copia restaurada correctamente.')}catch(err){alert('No se pudo importar la copia: '+err.message)}e.target.value=''});clearAll.addEventListener('click',()=>{if(confirm('¿Seguro que quieres BORRAR TODOS los ingresos, gastos e inversiones? Esta acción no se puede deshacer.')){localStorage.removeItem(KEY);location.reload()}});function csvCell(v){const s=String(v??'');return '"'+s.replace(/"/g,'""')+'"'}function download(name,text,type){const blob=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 window.addEventListener('resize',updateAll);window.editMoneyRow=editMoneyRow;window.deleteMoneyRow=deleteMoneyRow;window.editStockRow=editStockRow;window.deleteStockRow=deleteStockRow;window.editBtcRow=editBtcRow;window.deleteBtcRow=deleteBtcRow;window.removeCategory=removeCategory;
 load();renderCategories();setTodayDefaults();payrollCycle.checked=state.payrollCycle;updateAll();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/MIS-INGRESOS-GASTOS/sw.js', {scope:'/MIS-INGRESOS-GASTOS/'}).catch(()=>{}));
 </script>
 </body>
 </html>
